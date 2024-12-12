@@ -10,6 +10,6 @@ class Transportation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'type', 'description', 'price_range', 'latitude', 'longitude', 'image',
+        'name', 'type', 'description', 'price_range', 'latitude', 'longitude', 'image_url',
     ];
 }

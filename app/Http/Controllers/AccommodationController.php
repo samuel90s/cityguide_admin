@@ -23,22 +23,32 @@ class AccommodationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'address' => 'nullable|string',
+            'location' => 'nullable|string',
             'price_per_night' => 'nullable|numeric',
             'facilities' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Accommodation::create($request->all());
+        $imageUrl = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('accommodations', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        Accommodation::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'location' => $request->location,
+            'price_per_night' => $request->price_per_night,
+            'facilities' => $request->facilities,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('accommodations.index')->with('success', 'Accommodation created successfully.');
-    }
-
-    public function show(Accommodation $accommodation)
-    {
-        return view('accommodations.show', compact('accommodation'));
     }
 
     public function edit(Accommodation $accommodation)
@@ -51,15 +61,30 @@ class AccommodationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'address' => 'nullable|string',
+            'location' => 'nullable|string',
             'price_per_night' => 'nullable|numeric',
             'facilities' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $accommodation->update($request->all());
+        $imageUrl = $accommodation->image_url;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('accommodations', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        $accommodation->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'location' => $request->location,
+            'price_per_night' => $request->price_per_night,
+            'facilities' => $request->facilities,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('accommodations.index')->with('success', 'Accommodation updated successfully.');
     }

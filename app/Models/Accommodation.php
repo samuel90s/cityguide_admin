@@ -10,6 +10,13 @@ class Accommodation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'address', 'price_per_night', 'facilities', 'latitude', 'longitude', 'image'
+        'name',
+        'description',
+        'location',
+        'price_per_night',
+        'facilities',
+        'latitude',
+        'longitude',
+        'image_url',
     ];
 }

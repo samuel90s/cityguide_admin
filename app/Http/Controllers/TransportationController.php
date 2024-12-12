@@ -27,10 +27,24 @@ class TransportationController extends Controller
             'price_range' => 'nullable|string|max:100',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Transportation::create($request->all());
+        $imageUrl = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('transportations', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        Transportation::create([
+            'name' => $request->name,
+            'type' => $request->type,
+            'description' => $request->description,
+            'price_range' => $request->price_range,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('transportations.index')->with('success', 'Transportation created successfully.');
     }
@@ -54,10 +68,24 @@ class TransportationController extends Controller
             'price_range' => 'nullable|string|max:100',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $transportation->update($request->all());
+        $imageUrl = $transportation->image_url;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('transportations', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        $transportation->update([
+            'name' => $request->name,
+            'type' => $request->type,
+            'description' => $request->description,
+            'price_range' => $request->price_range,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('transportations.index')->with('success', 'Transportation updated successfully.');
     }

@@ -12,10 +12,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Image</th>
                             <th>Name</th>
-                            <th>Address</th>
+                            <th>Location</th>
                             <th>Price Per Night</th>
                             <th>Facilities</th>
+                            <th>Map</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -23,10 +25,26 @@
                         @foreach($accommodations as $accommodation)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>
+                                @if($accommodation->image_url)
+                                    <img src="{{ $accommodation->image_url }}" alt="{{ $accommodation->name }}" style="width: 100px; height: auto;">
+                                @else
+                                    <span>No Image</span>
+                                @endif
+                            </td>
                             <td>{{ $accommodation->name }}</td>
-                            <td>{{ $accommodation->address ?? 'No Address' }}</td>
+                            <td>{{ $accommodation->location ?? 'No Location' }}</td>
                             <td>{{ $accommodation->price_per_night ? 'Rp ' . number_format($accommodation->price_per_night, 0, ',', '.') : 'Not Specified' }}</td>
                             <td>{{ $accommodation->facilities ?? 'No Facilities' }}</td>
+                            <td>
+                                @if($accommodation->latitude && $accommodation->longitude)
+                                    <a href="https://www.google.com/maps/search/?api=1&query={{ $accommodation->latitude }},{{ $accommodation->longitude }}" target="_blank">
+                                        View on Map
+                                    </a>
+                                @else
+                                    <span>No Location</span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ route('accommodations.edit', $accommodation->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                 <form action="{{ route('accommodations.destroy', $accommodation->id) }}" method="POST" class="d-inline">

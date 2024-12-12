@@ -12,10 +12,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>Image</th>
+                            <th>Event Name</th>
                             <th>Date</th>
                             <th>Location</th>
                             <th>Ticket Price</th>
+                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -23,10 +25,23 @@
                         @foreach($events as $event)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>
+                                @if($event->image_url)
+                                    <img src="{{ $event->image_url }}" alt="{{ $event->name }}" style="width: 100px; height: auto;">
+                                @else
+                                    <span>No Image</span>
+                                @endif
+                            </td>
                             <td>{{ $event->name }}</td>
                             <td>{{ \Carbon\Carbon::parse($event->event_date)->format('d M Y') }}</td>
-                            <td>{{ $event->location ?? 'No Location' }}</td>
+                            <td>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ $event->latitude }},{{ $event->longitude }}" target="_blank">
+                                    {{ $event->location }}
+                                </a>
+
+                            </td>
                             <td>{{ $event->ticket_price ? 'Rp' . number_format($event->ticket_price, 0, ',', '.') : 'Free' }}</td>
+                            <td>{{ $event->created_at->format('d M Y') }}</td>
                             <td>
                                 <a href="{{ route('events.edit', $event->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                 <form action="{{ route('events.destroy', $event->id) }}" method="POST" class="d-inline">

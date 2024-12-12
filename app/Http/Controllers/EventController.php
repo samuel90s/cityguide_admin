@@ -24,14 +24,29 @@ class EventController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'event_date' => 'required|date',
-            'location' => 'nullable|string',
+            'location' => 'required|string',
             'ticket_price' => 'nullable|numeric',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Event::create($request->all());
+        $imageUrl = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('events', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        Event::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'event_date' => $request->event_date,
+            'location' => $request->location,
+            'ticket_price' => $request->ticket_price,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('events.index')->with('success', 'Event created successfully.');
     }
@@ -52,14 +67,29 @@ class EventController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'event_date' => 'required|date',
-            'location' => 'nullable|string',
+            'location' => 'required|string',
             'ticket_price' => 'nullable|numeric',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $event->update($request->all());
+        $imageUrl = $event->image_url;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('events', 'public');
+            $imageUrl = asset('storage/' . $path);
+        }
+
+        $event->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'event_date' => $request->event_date,
+            'location' => $request->location,
+            'ticket_price' => $request->ticket_price,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'image_url' => $imageUrl,
+        ]);
 
         return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
