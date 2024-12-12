@@ -12,11 +12,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Image</th>
                             <th>Destination Name</th>
                             <th>Description</th>
                             <th>Location</th>
                             <th>Category</th>
                             <th>Price Range</th>
+                            <th>Opening Hours</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -25,11 +27,23 @@
                         @foreach($destinations as $destination)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
+                            <td>
+                                @if($destination->image_url)
+                                    <img src="{{ $destination->image_url }}" alt="{{ $destination->name }}" style="width: 100px; height: auto;">
+                                @else
+                                    <span>No Image</span>
+                                @endif
+                            </td>
                             <td>{{ $destination->name }}</td>
                             <td>{{ $destination->description ?? 'No description' }}</td>
-                            <td>{{ $destination->location }}</td>
+                            <td>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ $destination->latitude }},{{ $destination->longitude }}" target="_blank">
+                                    {{ $destination->location }}
+                                </a>
+                            </td>
                             <td>{{ ucfirst($destination->category) }}</td>
                             <td>{{ $destination->price_range ?? 'Not Specified' }}</td>
+                            <td>{{ $destination->opening_hours ?? 'Not Specified' }}</td>
                             <td>{{ $destination->created_at->format('d M Y') }}</td>
                             <td>
                                 <a href="{{ route('destinations.edit', $destination->id) }}" class="btn btn-warning btn-sm">Edit</a>
